@@ -5,7 +5,7 @@ body{
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: "Nanum Pen script";
+  font-family: "Nanum Pen Script";
   min-height: 100vh;
   margin: 0;
 }
@@ -29,4 +29,65 @@ body{
 
 .App{
   min-height: 100vh;
+  padding: 0 20px;
+}
+
+/* MyButton */
+
+.MyButton{
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 18px;
+  white-space: nowrap;
+  font-family: "Nanum Pen Script";
+}
+
+.MyButton_default{
+  background-color: #ececec;
+  color: black;
+}
+
+.MyButton_positive{
+  background-color: #63c964;
+  color: white;
+}
+
+.MyButton_negative{
+  background-color: #fd565f;
+  color: white;
+}
+
+/* HEADER */
+
+header{
+  padding: 20px 0;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e2e2e2;
+}
+
+header > div{
+  display: flex;
+}
+
+header .head_text{
+  width: 50%;
+  font-size: 25px;
+  justify-content: center;
+}
+
+header .head_btn_left{
+  width: 25%;
+  justify-content: start;
+}
+
+header .head_btn_right{
+  width: 25%;
+  justify-content: end;
+}
+
+header button{
+  font-family: "Nanum Pen Script";
 }
