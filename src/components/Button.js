@@ -3,7 +3,7 @@ const Button = ({ text, type, onClick }) => {
 
   return (
     <button
-      className={["MyButton", `MyButton_${btnType}`].join(" ")}
+      className={["Button", `Button_${btnType}`].join(" ")}
       onClick={onClick}
     >
       {text}
@@ -11,7 +11,7 @@ const Button = ({ text, type, onClick }) => {
   );
 };
 
-MyButton.defaultProps = {
+Button.defaultProps = {
   type: "default",
 };
 
