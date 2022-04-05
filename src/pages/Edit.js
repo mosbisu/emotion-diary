@@ -19,7 +19,6 @@ const Edit = () => {
       const targetDiary = diaryList.find(
         (it) => parseInt(it.id) === parseInt(id)
       );
-      console.log(targetDiary);
 
       if (targetDiary) {
         setOriginData(targetDiary);

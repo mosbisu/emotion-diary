@@ -173,11 +173,6 @@ header button{
   margin-bottom: 5px;
 }
 
-.DiaryItem .diary_time{
-  font-size: 18px;
-  font-weight: normal;
-}
-
 .DiaryItem .diary_content_preview{
   font-size: 18px;
 }
@@ -187,10 +182,6 @@ header button{
 }
 
 /* DiaryEditor */
-
-.DiarytEditor{
-
-}
 
 .DiaryEditor section{
   margin-bottom: 40px;
