@@ -33,8 +33,8 @@ const DiaryItem = ({ diaryObj }) => {
           <span className="diary_nickname">{diaryObj.nickname}</span>
         </div>
         <div className="diary_content_preview">
-          {diaryObj.content.length > 25
-            ? diaryObj.content.slice(0, 25) + "..."
+          {diaryObj.content.length > 80
+            ? diaryObj.content.slice(0, 80) + "..."
             : diaryObj.content}
         </div>
       </div>
