@@ -1,23 +1,27 @@
-import { useContext, useEffect, useState } from "react";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { DiaryStateContext } from "../App";
 import DiaryEditor from "../components/DiaryEditor";
+import { dbService } from "../firebase";
 
 const Edit = () => {
   const navigate = useNavigate();
+  const { num } = useParams();
+  const [diaries, setDiaries] = useState([]);
   const [originData, setOriginData] = useState();
-  const { id } = useParams();
-  const diaryList = useContext(DiaryStateContext);
 
   useEffect(() => {
-    const titleElement = document.getElementsByTagName("title")[0];
-    titleElement.innerHTML = `감정 일기장 - ${id}번 일기 수정`;
-  }, []);
+    onSnapshot(query(collection(dbService, "diaries")), (snapshot) => {
+      const diaryArray = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setDiaries(diaryArray);
+    });
 
-  useEffect(() => {
-    if (diaryList.length >= 1) {
-      const targetDiary = diaryList.find(
-        (it) => parseInt(it.id) === parseInt(id)
+    if (diaries.length >= 1) {
+      const targetDiary = diaries.find(
+        (it) => parseInt(it.num) === parseInt(num)
       );
 
       if (targetDiary) {
@@ -26,7 +30,12 @@ const Edit = () => {
         navigate("/", { replace: true });
       }
     }
-  }, [id, diaryList]);
+  }, [diaries]);
+
+  useEffect(() => {
+    const titleElement = document.getElementsByTagName("title")[0];
+    titleElement.innerHTML = `감정 일기장 - 일기 수정`;
+  }, []);
 
   return (
     <div>

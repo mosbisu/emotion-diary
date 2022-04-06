@@ -1,15 +1,13 @@
-import { useContext, useEffect, useState } from "react";
-import { DiaryStateContext } from "../App";
-
+import { collection, onSnapshot, query } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import Button from "../components/Button";
 import DiaryList from "../components/DiaryList";
 import Header from "../components/Header";
+import { dbService } from "../firebase";
 
 const Home = () => {
-  const diaryList = useContext(DiaryStateContext);
-
-  const [data, setData] = useState([]);
   const [curDate, setCurDate] = useState(new Date());
+  const [diaries, setDiaries] = useState([]);
   const headText = `${curDate.getFullYear()}년 ${curDate.getMonth() + 1}월`;
 
   useEffect(() => {
@@ -18,7 +16,17 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (diaryList.length >= 1) {
+    onSnapshot(query(collection(dbService, "diaries")), (snapshot) => {
+      const diaryArray = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setDiaries(diaryArray);
+    });
+  }, [diaries]);
+
+  useEffect(() => {
+    if (diaries.length >= 1) {
       const firstDay = new Date(
         curDate.getFullYear(),
         curDate.getMonth(),
@@ -34,11 +42,12 @@ const Home = () => {
         59
       ).getTime();
 
-      setData(
-        diaryList.filter((it) => firstDay <= it.date && it.date <= lastDay)
+      setDiaries(
+        diaries.filter((it) => firstDay <= it.date && it.date <= lastDay)
       );
+      console.log(diaries);
     }
-  }, [diaryList, curDate]);
+  }, [curDate]);
 
   const increaseMonth = () => {
     setCurDate(
@@ -59,7 +68,7 @@ const Home = () => {
         leftChild={<Button text={"<"} onClick={decreaseMonth} />}
         rightChild={<Button text={">"} onClick={increaseMonth} />}
       />
-      <DiaryList diaryList={data} />
+      <DiaryList />
     </div>
   );
 };

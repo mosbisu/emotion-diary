@@ -1,6 +1,5 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { DiaryDispatchContext } from "../App";
 
 import Button from "./Button";
 import EmotionItem from "./EmotionItem";
@@ -9,43 +8,61 @@ import Header from "./Header";
 import { getStringDate } from "../util/date";
 import { emotionList } from "../util/emotion";
 
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
+import { dbService } from "../firebase";
+
 const DiaryEditor = ({ isEdit, originData }) => {
   const navigate = useNavigate();
   const contentRef = useRef();
-  const [emotion, setEmotion] = useState(3);
-  const [date, setDate] = useState(getStringDate(new Date()));
-  const [content, setContent] = useState("");
 
-  const { onCreate, onEdit, onRemove } = useContext(DiaryDispatchContext);
+  const [date, setDate] = useState(getStringDate(new Date()));
+  const [emotion, setEmotion] = useState(3);
+  const [content, setContent] = useState("");
+  const [nickname, setNickname] = useState("");
 
   const handleClickEmote = useCallback((emotion) => {
     setEmotion(emotion);
   }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (content.length < 1) {
       contentRef.current.focus();
       return;
     }
-
     if (
       window.confirm(
         isEdit ? "일기를 수정하시겠습니까?" : "새로운 일기를 작성하시겠습니까?"
       )
     ) {
       if (!isEdit) {
-        onCreate(date, content, emotion);
+        const diaryObj = {
+          num: Math.floor(Math.random() * 1e7),
+          date: Date.now(),
+          content,
+          emotion,
+          nickname,
+        };
+        await addDoc(collection(dbService, "diaries"), diaryObj);
       } else {
-        onEdit(originData.id, date, content, emotion);
+        await updateDoc(doc(dbService, "diaries", `${originData.id}`), {
+          content: content,
+          emotion: emotion,
+          nickname: nickname,
+        });
       }
+      navigate("/", { replace: true });
     }
-
-    navigate("/", { replace: true });
   };
 
-  const handleRemove = () => {
+  const handleRemove = async () => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
-      onRemove(originData.id);
+      await deleteDoc(doc(dbService, "diaries", `${originData.id}`));
       navigate("/", { replace: true });
     }
   };
@@ -55,8 +72,9 @@ const DiaryEditor = ({ isEdit, originData }) => {
       setDate(getStringDate(new Date(parseInt(originData.date))));
       setEmotion(originData.emotion);
       setContent(originData.content);
+      setNickname(originData.nickname);
     }
-  }, [isEdit, originData]);
+  }, [isEdit]);
 
   return (
     <div className="DiaryEditor">
@@ -82,6 +100,17 @@ const DiaryEditor = ({ isEdit, originData }) => {
               value={date}
               onChange={(e) => setDate(e.target.value)}
               type="date"
+            />
+          </div>
+        </section>
+        <section>
+          <h4>작성자</h4>
+          <div className="input_box">
+            <input
+              className="input_nickname"
+              value={nickname}
+              placeholder="닉네임"
+              onChange={(e) => setNickname(e.target.value)}
             />
           </div>
         </section>
@@ -113,7 +142,7 @@ const DiaryEditor = ({ isEdit, originData }) => {
           <div className="control_box">
             <Button text={"취소하기"} onClick={() => navigate(-1)} />
             <Button
-              text={"작성완료"}
+              text={isEdit ? "수정하기" : "작성하기"}
               type={"positive"}
               onClick={handleSubmit}
             />

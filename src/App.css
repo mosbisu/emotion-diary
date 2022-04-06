@@ -173,6 +173,12 @@ header button{
   margin-bottom: 5px;
 }
 
+.DiaryItem .diary_nickname{
+  font-weight: normal;
+  font-size: 18px;
+  margin-left: 10px;
+}
+
 .DiaryItem .diary_content_preview{
   font-size: 18px;
 }
@@ -198,6 +204,15 @@ header button{
   background-color: #ececec;
   padding: 10px 20px;
   cursor: pointer;
+  font-family: "Nanum Pen Script";
+  font-size: 20px;
+}
+
+.DiaryEditor .input_nickname{
+  border: none;
+  border-radius: 5px;
+  background-color: #ececec;
+  padding: 10px 20px;
   font-family: "Nanum Pen Script";
   font-size: 20px;
 }
@@ -281,7 +296,7 @@ header button{
 
 .DiaryPage section{
   width: 100%;
-  margin-bottom: 100px;
+  margin-bottom: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -291,6 +306,11 @@ header button{
 .DiaryPage h4{
   font-size: 22px;
   font-weight: bold;
+  margin: 20px 0;
+}
+
+.DiaryPage span{
+  font-size: 20px;
 }
 
 .DiaryPage .diary_img_wrapper{

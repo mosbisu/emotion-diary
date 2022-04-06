@@ -2,16 +2,16 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "./Button";
 
-const DiaryItem = ({ id, emotion, content, date }) => {
+const DiaryItem = ({ diaryObj }) => {
   const navigate = useNavigate();
-  const strDate = new Date(parseInt(date)).toLocaleDateString();
+  const strDate = new Date(parseInt(diaryObj.date)).toLocaleDateString();
 
   const goDetail = () => {
-    navigate(`/diary/${id}`);
+    navigate(`/diary/${diaryObj.num}`);
   };
 
   const goEdit = () => {
-    navigate(`/edit/${id}`);
+    navigate(`/edit/${diaryObj.num}`);
   };
 
   return (
@@ -20,14 +20,23 @@ const DiaryItem = ({ id, emotion, content, date }) => {
         onClick={goDetail}
         className={[
           "emotion_img_wrapper",
-          `emotion_img_wrapper_${emotion}`,
+          `emotion_img_wrapper_${diaryObj.emotion}`,
         ].join(" ")}
       >
-        <img src={process.env.PUBLIC_URL + `assets/emotion${emotion}.png`} />
+        <img
+          src={process.env.PUBLIC_URL + `assets/emotion${diaryObj.emotion}.png`}
+        />
       </div>
       <div onClick={goDetail} className="info_wrapper">
-        <div className="diary_date">{strDate}</div>
-        <div className="diary_content_preview">{content.slice(0, 25)}</div>
+        <div className="diary_date">
+          {strDate}
+          <span className="diary_nickname">{diaryObj.nickname}</span>
+        </div>
+        <div className="diary_content_preview">
+          {diaryObj.content.length > 25
+            ? diaryObj.content.slice(0, 25) + "..."
+            : diaryObj.content}
+        </div>
       </div>
       <div className="btn_wrapper">
         <Button onClick={goEdit} text={"수정하기"} />

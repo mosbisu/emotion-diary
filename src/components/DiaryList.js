@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { dbService } from "../firebase";
 import Button from "./Button";
 import DiaryItem from "./DiaryItem";
 
@@ -30,10 +32,11 @@ const ControlMenu = React.memo(({ value, onChange, optionList }) => {
   );
 });
 
-const DiaryList = ({ diaryList }) => {
+const DiaryList = () => {
   const navigate = useNavigate();
   const [sortType, setSortType] = useState("newest");
   const [filter, setFilter] = useState("all");
+  const [diaries, setDiaries] = useState([]);
 
   const getProcessedDiaryList = () => {
     const filterCallBack = (item) => {
@@ -51,7 +54,7 @@ const DiaryList = ({ diaryList }) => {
         return parseInt(a.date) - parseInt(b.date);
       }
     };
-    const copyList = JSON.parse(JSON.stringify(diaryList));
+    const copyList = JSON.parse(JSON.stringify(diaries));
 
     const filteredList =
       filter === "all" ? copyList : copyList.filter((it) => filterCallBack(it));
@@ -59,6 +62,19 @@ const DiaryList = ({ diaryList }) => {
     const sortedList = filteredList.sort(compare);
     return sortedList;
   };
+
+  useEffect(() => {
+    onSnapshot(
+      query(collection(dbService, "diaries"), orderBy("date", "desc")),
+      (snapshot) => {
+        const diaryArray = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setDiaries(diaryArray);
+      }
+    );
+  }, []);
 
   return (
     <div className="DiaryList">
@@ -83,15 +99,11 @@ const DiaryList = ({ diaryList }) => {
           />
         </div>
       </div>
-      {getProcessedDiaryList().map((it) => (
-        <DiaryItem key={it.id} {...it} />
+      {getProcessedDiaryList().map((diary) => (
+        <DiaryItem key={diary.id} diaryObj={diary} />
       ))}
     </div>
   );
-};
-
-DiaryList.defaultProps = {
-  diaryList: [],
 };
 
 export default DiaryList;
