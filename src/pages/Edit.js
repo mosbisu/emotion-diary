@@ -1,4 +1,4 @@
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import { collection, onSnapshot, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import DiaryEditor from "../components/DiaryEditor";
@@ -18,7 +18,9 @@ const Edit = () => {
       }));
       setDiaries(diaryArray);
     });
+  }, []);
 
+  useEffect(() => {
     if (diaries.length >= 1) {
       const targetDiary = diaries.find(
         (it) => parseInt(it.num) === parseInt(num)
@@ -30,7 +32,7 @@ const Edit = () => {
         navigate("/", { replace: true });
       }
     }
-  }, [diaries]);
+  }, [num, diaries, navigate]);
 
   useEffect(() => {
     const titleElement = document.getElementsByTagName("title")[0];

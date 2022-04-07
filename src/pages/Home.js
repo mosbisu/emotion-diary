@@ -1,9 +1,7 @@
-import { collection, onSnapshot, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import Button from "../components/Button";
 import DiaryList from "../components/DiaryList";
 import Header from "../components/Header";
-import { dbService } from "../firebase";
 
 const Home = () => {
   const [curDate, setCurDate] = useState(new Date());
@@ -14,16 +12,6 @@ const Home = () => {
     const titleElement = document.getElementsByTagName("title")[0];
     titleElement.innerHTML = `감정 일기장`;
   }, []);
-
-  useEffect(() => {
-    onSnapshot(query(collection(dbService, "diaries")), (snapshot) => {
-      const diaryArray = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setDiaries(diaryArray);
-    });
-  }, [diaries]);
 
   useEffect(() => {
     if (diaries.length >= 1) {
@@ -47,7 +35,7 @@ const Home = () => {
       );
       console.log(diaries);
     }
-  }, [curDate]);
+  }, [diaries, curDate]);
 
   const increaseMonth = () => {
     setCurDate(

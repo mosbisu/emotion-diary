@@ -27,7 +27,9 @@ const Diary = () => {
       }));
       setDiaries(diaryArray);
     });
+  }, []);
 
+  useEffect(() => {
     if (diaries.length >= 1) {
       const targetDiary = diaries.find(
         (it) => parseInt(it.num) === parseInt(num)
@@ -40,7 +42,7 @@ const Diary = () => {
         navigate("/", { replace: true });
       }
     }
-  }, [diaries]);
+  }, [num, diaries, navigate]);
 
   if (!originData) {
     return <div className="DiaryPage">로딩중입니다...</div>;
@@ -77,7 +79,7 @@ const Diary = () => {
                 `diary_img_wrapper_${originData.emotion}`,
               ].join(" ")}
             >
-              <img src={curEmotionData.emotion_img} />
+              <img src={curEmotionData.emotion_img} alt="" />
               <div className="emotion_descript">
                 {curEmotionData.emotion_descript}
               </div>
